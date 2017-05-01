@@ -135,4 +135,6 @@ public class Contacto {
     public void setGrupos(Grupo grupo) {//añadir un grupo
         this.grupos.add(grupo);
     }
+
+
 }
