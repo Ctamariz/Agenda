@@ -1,9 +1,11 @@
 package com.example.charls.agenda.Clases;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.util.DisplayMetrics;
@@ -23,6 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.charls.agenda.R;
+import com.example.charls.agenda.SQL.agenda_sqlLit;
 import com.example.charls.agenda.web.Constantes;
 import com.example.charls.agenda.web.VolleySingleton;
 
@@ -40,7 +43,7 @@ import java.util.Map;
 
 public class Agenda implements View.OnClickListener {
 
-
+    private SQLiteDatabase db;
     ArrayList<Contacto>contactos=new ArrayList<Contacto>();
     Context c;
     private ViewGroup layout;
@@ -51,6 +54,11 @@ public class Agenda implements View.OnClickListener {
     {
         this.activity = act;
        this.c=context;
+        agenda_sqlLit agenda =
+                new agenda_sqlLit(this.c, "Agenda", null, 1);
+
+        db = agenda.getWritableDatabase();
+
         layout = (ViewGroup) activity.findViewById(R.id.content);
         scrollView = (ScrollView) activity.findViewById(R.id.scrollView);
 
@@ -257,7 +265,7 @@ public class Agenda implements View.OnClickListener {
                 }
                 else
                 {*/
-               if(i % 2==0)
+               if(i % 2==0)//cambiamos el color si es par el num del layout
                {
                    shape.setColor(Color.argb(1000, 183,235,255));
                }
@@ -506,8 +514,45 @@ public class Agenda implements View.OnClickListener {
     ////////
 
     public void onClick(View v) {
-Alerta("QUE NOTA LA MOTA");
+        Alerta("QUE NOTA LA MOTA");
 
 
+    }
+
+    public void eliminar_registros()
+    {
+        db.delete("Contacto", "1=" + 1 + "", null);
+
+        Alerta("Eliminando");
+    }
+
+    public boolean insertarContacto(int idContacto,int idInstitucion, String nombre, String apellido, String claro, String movistar, String cootel,
+                                    String casa,String trabajo,String correo1,String correo2,String apodo,String foto)
+    {
+
+
+        ContentValues contactoValues = new ContentValues();
+        contactoValues.put("id_contacto", idContacto);
+        contactoValues.put("id_institucion", idInstitucion);
+        contactoValues.put("nombre", nombre);
+        contactoValues.put("apellido", apellido);
+        contactoValues.put("claro", claro);
+        contactoValues.put("movistar", movistar);
+        contactoValues.put("cootel", cootel);
+        contactoValues.put("casa", casa);
+        contactoValues.put("trabajo", trabajo);
+        contactoValues.put("correo1", correo1);
+        contactoValues.put("correo2", correo2);
+        contactoValues.put("apodo", apodo);
+        contactoValues.put("foto", foto);
+
+
+            db.insert("Contacto", null, contactoValues);
+
+            Alerta("Registro guardado satisfactoriamente");
+
+
+
+        return true;
     }
 }
