@@ -11,7 +11,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Agenda agenda = new Agenda(this);
+        Agenda agenda = new Agenda(this,MainActivity.this);
         agenda.solicitar_contactos();
     }
 }
