@@ -13,5 +13,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Agenda agenda = new Agenda(this,MainActivity.this);
         agenda.solicitar_contactos();
+
     }
 }

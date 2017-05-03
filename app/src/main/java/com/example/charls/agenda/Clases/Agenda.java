@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -61,6 +62,9 @@ public class Agenda implements View.OnClickListener {
 
         layout = (ViewGroup) activity.findViewById(R.id.content);
         scrollView = (ScrollView) activity.findViewById(R.id.scrollView);
+
+
+
 
     }
 
@@ -197,8 +201,8 @@ public class Agenda implements View.OnClickListener {
                         contacto.setCorreo2(correo2[i]);
                         this.setContacto(contacto);//se agrega el objeto al arreglo...
                     }
-                    this.muestra_interfaz(this.contactos);
-            //        al.lectura();
+               //     this.muestra_interfaz(this.contactos);
+                    sincronizar(contactos);
                 }
 
             }
@@ -356,7 +360,7 @@ public class Agenda implements View.OnClickListener {
                 ////Fecha
                 tv_fecha[i] = new TextView(this.c);
                 tv_fecha[i].setId(i + 6000);
-                tv_fecha[i].setText("Inicio: " + "02/05/2017");
+                tv_fecha[i].setText("Institución: " + " Chocobananos");
                 tv_fecha[i].setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                 tv_fecha[i].setTextColor(Color.BLACK);
 ///
@@ -411,7 +415,7 @@ public class Agenda implements View.OnClickListener {
                /* }*/
                 tv_a[i].setText("" + con.getNombre());
                 tv_prof[i].setText("" + con.getApellido());
-                tv_fechaf[i].setText("Movistar: " + con.getMovistar());
+                tv_fechaf[i].setText("" + "");//FECHA FINAL INFERIOR DERECHO
                 ///////////40
 
 
@@ -555,4 +559,119 @@ public class Agenda implements View.OnClickListener {
 
         return true;
     }
+
+    private void sincronizar(ArrayList<Contacto>contactos)
+    {
+
+        ThreadSync tarea = new ThreadSync();
+        tarea.setContactos(contactos);
+        tarea.start();
+
+        ThreadLectura tl = new ThreadLectura();
+        tl.start();
+
+    }
+    class ThreadSync extends Thread {
+        ArrayList<Contacto>contacto2;
+        public void setContactos(ArrayList<Contacto>cont)
+        {
+            this.contacto2=cont;
+        }
+        @Override
+        public void run() {
+
+               eliminar_registros();
+                for (Contacto c : contacto2)
+                {
+                 insertarContacto(c.getIdContacto(),0, c.getNombre(), c.getApellido(),c.getClaro(),c.getMovistar(),c.getCootel(),c.getCasa(),c.getTrabajo(),c.getCorreo1(),c.getCorreo2(),c.getApodo(),"");
+                 Alerta("Se insertó "+c.getNombre()+" "+c.getApellido());
+                }
+            ThreadLectura tl = new ThreadLectura();
+            tl.start();
+
+        }
+    }
+
+
+    class ThreadLectura extends Thread {
+        ArrayList<Contacto>contacto2;
+
+
+        public int cantidad_registros()
+        {
+            Cursor a = db.rawQuery("select id_contacto, id_institucion, nombre, apellido, claro, movistar, cootel, casa, trabajo, correo1, correo2, apodo, foto from Contacto", null);
+            int i=0;
+            if (a.moveToFirst())
+            {
+                do
+                {
+                    i++;
+                } while (a.moveToNext());
+            }
+            Alerta("la pinche i "+i);
+            return i;
+        }
+        @Override
+
+
+        public void run() {
+
+Alerta("ENTRO EN LA JUGADA");
+
+           if(cantidad_registros()==0)
+            {
+                Alerta("NO HAY NI UNO");
+                layout.removeAllViews();
+            }
+            else
+            {
+                Alerta("ESTAMOS TUANIS");
+                contacto2=new ArrayList<Contacto>();
+
+                Cursor a = db.rawQuery("select id_contacto, id_institucion, nombre, apellido, claro, movistar, cootel, casa, trabajo, correo1, correo2, apodo, foto from Contacto" , null);
+
+          //      Alerta("-----------------------------------"+"select id , actividad , fecha_in , fecha_fin , arto , cargo  from Agenda where actividad like '%" + palabra + "%'");
+                int i=0;
+                if (a.moveToFirst())
+                {
+                    do {
+
+                        Contacto contacto = new Contacto();
+                        contacto.setIdContacto(a.getInt(0));
+                        // contacto.setInstitucion(id_institucion);
+                        contacto.setNombre(a.getString(2));
+                        contacto.setApellido(a.getString(3));
+                        contacto.setClaro(a.getString(4));
+                        contacto.setMovistar(a.getString(5));
+                        contacto.setCootel(a.getString(6));
+                        contacto.setCasa(a.getString(7));
+                        contacto.setTrabajo(a.getString(8));
+                        contacto.setCorreo1(a.getString(9));
+                        contacto.setCorreo2(a.getString(10));
+                        contacto2.add(contacto);
+
+
+
+                        //  Alerta("EL CARGO ES ///////////// " + car[i]);
+
+                        //  i++;
+                    } while (a.moveToNext());
+
+
+                }
+
+               muestra_interfaz(contacto2);
+           }
+/*
+
+ */
+
+
+        }
+    }
+
+
+
+
+
 }
