@@ -187,7 +187,7 @@ public class Agenda implements View.OnClickListener {
 
                         Alerta("El registro es"+nombre[i]);
                         //  notificar(id[i] + "-" + actividad[i] + "-" + fecha_inicio[i] + "-" + fecha_fin[i] + "-" + arto[i] + "-" + cargo[i]);
-                        Contacto contacto = new Contacto();
+                        Contacto contacto = new Contacto(this.c);
                         contacto.setIdContacto(id_contacto[i]);
                        // contacto.setInstitucion(id_institucion);
                         contacto.setNombre(nombre[i]);
@@ -563,11 +563,11 @@ public class Agenda implements View.OnClickListener {
     private void sincronizar(ArrayList<Contacto>contactos)
     {
 
-        ThreadSync tarea = new ThreadSync();
+        ThreadSync tarea = new ThreadSync(this.c);
         tarea.setContactos(contactos);
         tarea.start();
 
-        ThreadLectura tl = new ThreadLectura();
+        ThreadLectura tl = new ThreadLectura(this.c);
         tl.start();
 
     }
@@ -577,6 +577,13 @@ public class Agenda implements View.OnClickListener {
         {
             this.contacto2=cont;
         }
+
+        Context c;
+
+        public ThreadSync(Context context){
+            c=context;
+        }
+
         @Override
         public void run() {
 
@@ -586,7 +593,7 @@ public class Agenda implements View.OnClickListener {
                  insertarContacto(c.getIdContacto(),0, c.getNombre(), c.getApellido(),c.getClaro(),c.getMovistar(),c.getCootel(),c.getCasa(),c.getTrabajo(),c.getCorreo1(),c.getCorreo2(),c.getApodo(),"");
                  Alerta("Se insertó "+c.getNombre()+" "+c.getApellido());
                 }
-            ThreadLectura tl = new ThreadLectura();
+            ThreadLectura tl = new ThreadLectura(this.c);
             tl.start();
 
         }
@@ -595,7 +602,11 @@ public class Agenda implements View.OnClickListener {
 
     class ThreadLectura extends Thread {
         ArrayList<Contacto>contacto2;
+        Context c;
 
+        public ThreadLectura(Context context){
+            c=context;
+        }
 
         public int cantidad_registros()
         {
@@ -617,8 +628,8 @@ public class Agenda implements View.OnClickListener {
         public void run() {
 
 Alerta("ENTRO EN LA JUGADA");
-
-           if(cantidad_registros()==0)
+        try{
+            if(cantidad_registros()==0)
             {
                 Alerta("NO HAY NI UNO");
                 layout.removeAllViews();
@@ -630,13 +641,13 @@ Alerta("ENTRO EN LA JUGADA");
 
                 Cursor a = db.rawQuery("select id_contacto, id_institucion, nombre, apellido, claro, movistar, cootel, casa, trabajo, correo1, correo2, apodo, foto from Contacto" , null);
 
-          //      Alerta("-----------------------------------"+"select id , actividad , fecha_in , fecha_fin , arto , cargo  from Agenda where actividad like '%" + palabra + "%'");
+                //      Alerta("-----------------------------------"+"select id , actividad , fecha_in , fecha_fin , arto , cargo  from Agenda where actividad like '%" + palabra + "%'");
                 int i=0;
                 if (a.moveToFirst())
                 {
                     do {
 
-                        Contacto contacto = new Contacto();
+                        Contacto contacto = new Contacto(this.c);
                         contacto.setIdContacto(a.getInt(0));
                         // contacto.setInstitucion(id_institucion);
                         contacto.setNombre(a.getString(2));
@@ -660,8 +671,12 @@ Alerta("ENTRO EN LA JUGADA");
 
                 }
 
-               muestra_interfaz(contacto2);
-           }
+                muestra_interfaz(contacto2);
+            }
+        }catch(Exception e){
+
+        }
+
 /*
 
  */
@@ -669,6 +684,7 @@ Alerta("ENTRO EN LA JUGADA");
 
         }
     }
+
 
 
 
