@@ -39,12 +39,13 @@ public class Contacto {
     private String correo2;
     private String apodo;
     private String foto;
-    private Institucion institucion=new Institucion();
+
     Context c;
     private SQLiteDatabase db;
 
 
     ArrayList<Grupo>grupos=new ArrayList<Grupo>();
+    ArrayList<Institucion>instituciones=new ArrayList<Institucion>();
 
     public Contacto(Context context)
     {
@@ -105,6 +106,111 @@ public class Contacto {
         );
     }
 
+
+    public void solicitar_instituciones()
+    {
+
+
+        HashMap<String, String> map = new HashMap<>();
+        JSONObject jobject = new JSONObject(map);
+        String newURL;
+        newURL = Constantes.GETInst;
+        //+ "?imei=" + telefono + "&" + "u_id=" + cantidad;
+        Alerta("" + newURL);
+        VolleySingleton.getInstance(this.c).addToRequestQueue(
+                new JsonObjectRequest(
+                        Request.Method.GET,
+                        newURL,
+                        jobject,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                // Procesar la respuesta del servidor
+                                obtener_instituciones(response);
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                //  notificar("Error en la conexion");
+                                Alerta("Error Volley: " + error.getMessage());
+                                //  guardarMeta(2);
+                            }
+                        }
+
+                ) {
+                    @Override
+                    public Map<String, String> getHeaders() {
+                        Map<String, String> headers = new HashMap<>();
+                        headers.put("dataType", "application/json");
+                        headers.put("Content-Type", "application/json; charset=utf-8");
+                        return headers;
+                    }
+
+                    @Override
+                    public String getBodyContentType() {
+                        return "application/json; charset=utf-8" + getParamsEncoding();
+                    }
+                }
+        );
+    }
+
+    private void obtener_instituciones(JSONObject response) {
+
+        try {
+            // Obtener estado
+            String estado = response.getString("estado");
+            // Obtener mensaje
+            String mensaje = response.getString("mensaje");
+
+
+            if(!estado.equals("1")) {
+                Alerta("Tenemos error de sincronizacion!");
+            }
+            else
+            {
+                int cantidad = response.getInt("cantidad");
+                if(cantidad==0) {
+                    Alerta("No hay registros nuevos!");
+                } else
+                {
+                    String cad1, cad2;
+
+                    //  int id[] = new int[cantidad];
+
+                    int id_institucion[] = new int[cantidad];
+
+                    String nombre[] = new String[cantidad];
+
+
+                    for (int i = 0; i < cantidad; i++)
+                    {
+                        cad1 = "id_institucion" + (i);
+                        cad2 = "nombre" + (i);
+
+                        id_institucion[i]=response.getInt(cad1);
+                        nombre[i]=response.getString(cad2);
+
+
+                        Alerta("El registro es "+nombre[i]);
+                        //  notificar(id[i] + "-" + actividad[i] + "-" + fecha_inicio[i] + "-" + fecha_fin[i] + "-" + arto[i] + "-" + cargo[i]);
+                        Institucion institucion = new Institucion();
+                        institucion.setIdInstitucion(id_institucion[i]);
+                        // contacto.setInstitucion(id_institucion);
+                        institucion.setNombre(nombre[i]);
+
+                        this.setInstituciones(institucion);//se agrega el objeto al arreglo...
+                    }
+                    //     this.muestra_interfaz(this.contactos);
+                    sincronizarInstituciones(instituciones,this.c);
+                }
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+
+        }
+    }
 
     private void obtener_grupos(JSONObject response) {
 
@@ -175,10 +281,27 @@ public class Contacto {
 
     }
 
+    private void sincronizarInstituciones(ArrayList<Institucion>instituciones,Context c)
+    {
+
+        Contacto.ThreadSyncInst tarea = new Contacto.ThreadSyncInst(c);
+        tarea.setInstituciones(instituciones);
+        tarea.start();
+
+
+
+    }
 
     public void eliminar_registros()
     {
         db.delete("Grupo", "1=" + 1 + "", null);
+
+        Alerta("Eliminando");
+    }
+
+    public void eliminarInstitucion()
+    {
+        db.delete("Institucion", "1=" + 1 + "", null);
 
         Alerta("Eliminando");
     }
@@ -194,6 +317,25 @@ public class Contacto {
 
 
         db.insert("Grupo", null, grupoValues);
+
+        Alerta("Registro guardado satisfactoriamente");
+
+
+
+        return true;
+    }
+
+    public boolean insertarInstitucion (int idInstitucion, String nombre)
+    {
+
+
+        ContentValues InstitucionValues = new ContentValues();
+        InstitucionValues.put("id_institucion", idInstitucion);
+        InstitucionValues.put("nombre", nombre);
+
+
+
+        db.insert("Institucion", null, InstitucionValues);
 
         Alerta("Registro guardado satisfactoriamente");
 
@@ -224,8 +366,37 @@ public class Contacto {
                 insertarGrupo(g.getIdGrupo(),g.getNombre());
                 Alerta("Se insertó "+g.getIdGrupo()+" "+g.getNombre());
             }
-            Contacto.ThreadLectura tl = new Contacto.ThreadLectura(this.c);
-            tl.start();
+           // Contacto.ThreadLectura tl = new Contacto.ThreadLectura(this.c);
+          //  tl.start();
+
+        }
+    }
+
+
+    class ThreadSyncInst extends Thread {
+        ArrayList<Institucion>instituciones2;
+        public void setInstituciones(ArrayList<Institucion>gr)
+        {
+            instituciones2=gr;
+        }
+
+        Context c;
+
+        public ThreadSyncInst(Context context){
+            c=context;
+        }
+
+        @Override
+        public void run() {
+
+            eliminar_registros();
+            for (Institucion i : instituciones2)
+            {
+                insertarInstitucion(i.getIdInstitucion(),i.getNombre());
+                Alerta("Se insertó "+i.getIdInstitucion()+" "+i.getNombre());
+            }
+         //  Contacto.ThreadLecturaInstitucion tl = new Contacto.ThreadLecturaInstitucion(c);
+       // tl.start();
 
         }
     }
@@ -318,6 +489,84 @@ public class Contacto {
 
 
 
+    class ThreadLecturaInstitucion extends Thread {
+        ArrayList<Institucion>institucion2;
+        Context c;
+
+        public ThreadLecturaInstitucion(Context context){
+            c=context;
+        }
+
+        public int cantidad_registros()
+        {
+            Cursor a = db.rawQuery("select id_institucion, nombre from Institucion", null);
+            int i=0;
+            if (a.moveToFirst())
+            {
+                do
+                {
+                    i++;
+                } while (a.moveToNext());
+            }
+            Alerta("la pinche i "+i);
+            return i;
+        }
+        @Override
+
+
+        public void run() {
+
+            Alerta("ENTRO EN LA JUGADA");
+
+            if(cantidad_registros()==0)
+            {
+                Alerta("NO HAY NI UNO");
+                //layout.removeAllViews();
+            }
+            else
+            {
+                Alerta("ESTAMOS TUANIS");
+                institucion2=new ArrayList<Institucion>();
+
+                Cursor a = db.rawQuery("select id_institucion, nombre from Institucion", null);
+                //      Alerta("-----------------------------------"+"select id , actividad , fecha_in , fecha_fin , arto , cargo  from Agenda where actividad like '%" + palabra + "%'");
+                int i=0;
+                if (a.moveToFirst())
+                {
+                    do {
+
+                        Institucion institucion = new Institucion();
+                        institucion.setIdInstitucion(a.getInt(0));
+                        // contacto.setInstitucion(id_institucion);
+                        institucion.setNombre(a.getString(1));
+
+                        institucion2.add(institucion);
+
+
+
+                        //  Alerta("EL CARGO ES ///////////// " + car[i]);
+
+                        //  i++;
+                    } while (a.moveToNext());
+
+
+                }
+
+                mostrarInstitucion(institucion2);
+            }
+/*
+
+ */
+
+
+        }
+        public void mostrarInstitucion(ArrayList<Institucion>institucion2){
+            for(Institucion i:institucion2){
+                Alerta("desde la bd "+i.getNombre());
+            }
+
+        }
+    }
 
 
 
@@ -427,13 +676,7 @@ public class Contacto {
         this.foto = foto;
     }
 
-    public Institucion getInstitucion() {
-        return institucion;
-    }
 
-    public void setInstitucion(Institucion institucion) {
-        this.institucion = institucion;
-    }
 
     public ArrayList<Grupo> getGrupos() {
         return grupos;
@@ -441,6 +684,13 @@ public class Contacto {
 
     public void setGrupos(Grupo grupo) {//añadir un grupo
         this.grupos.add(grupo);
+    }
+    public ArrayList<Institucion> getInstituciones() {
+        return instituciones;
+    }
+
+    public void setInstituciones(Institucion institucion) {//añadir un grupo
+        this.instituciones.add(institucion);
     }
 
 

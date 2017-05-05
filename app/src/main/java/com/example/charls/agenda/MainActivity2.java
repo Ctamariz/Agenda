@@ -67,8 +67,7 @@ public class MainActivity2 extends AppCompatActivity
 
        lectura();
         //  agenda.solicitar_contactos();
-        Contacto contacto = new Contacto(this);
-        contacto.solicitar_grupos();
+
 
     }
 
@@ -132,6 +131,10 @@ public class MainActivity2 extends AppCompatActivity
     {
         Agenda ag = new Agenda(this,MainActivity2.this);
         ag.solicitar_contactos();
+        Contacto contacto=new Contacto(this);
+        contacto.solicitar_instituciones();
+        contacto.solicitar_grupos();
+
     }
     public void lectura()
     {

@@ -654,7 +654,7 @@ Alerta("ENTRO EN LA JUGADA");
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                layout.removeAllViews();
+                                //layout.removeAllViews();
                             }
                         });
 
