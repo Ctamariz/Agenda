@@ -56,29 +56,38 @@ public class Agenda implements View.OnClickListener {
     {
         this.activity = act;
        this.c=context;
-        agenda_sqlLit agenda =
-                new agenda_sqlLit(this.c, "Agenda", null, 1);
+        agenda_sqlLit agenda = new agenda_sqlLit(this.c, "Agenda", null, 1);
 
         db = agenda.getWritableDatabase();
 
         layout = (ViewGroup) activity.findViewById(R.id.content);
         scrollView = (ScrollView) activity.findViewById(R.id.scrollView);
+        //leerDatos();
 
 
-      /*  ThreadLectura tl = new ThreadLectura(this.c);
-        tl.start();*/
 
     }
 
     public ArrayList<Contacto> getContactos() {
         return contactos;
     }
-    public void lectura()
+
+    public void leer_datos()
     {
         ThreadLectura tl = new ThreadLectura(this.c);
         tl.start();
     }
 
+    private void sincronizar(ArrayList<Contacto>contactos)
+    {
+
+        ThreadSync tarea = new ThreadSync(this.c);
+        tarea.setContactos(contactos);
+        tarea.start();
+
+
+
+    }
     public void solicitar_contactos()
     {
 
@@ -214,7 +223,8 @@ public class Agenda implements View.OnClickListener {
 
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Alerta("Este Jodido try "+e);
+           // e.printStackTrace();
 
         }
     }
@@ -492,7 +502,7 @@ public class Agenda implements View.OnClickListener {
                 }
             });
         } catch (Exception e) {
-            Alerta("" + e);
+            Alerta("ESTE JODIDO CATCH" + e);
         }
 
 
@@ -518,12 +528,6 @@ public class Agenda implements View.OnClickListener {
         Alerta("ANCHO DE LA PANTALLA //////////////////-------------------////////////////"+screenWidthInPixels);
         return screenWidthInPixels;
     }
-
-
-
-
-
-    ////////
 
     public void onClick(View v) {
         Alerta("QUE NOTA LA MOTA");
@@ -568,16 +572,7 @@ public class Agenda implements View.OnClickListener {
         return true;
     }
 
-    private void sincronizar(ArrayList<Contacto>contactos)
-    {
 
-        ThreadSync tarea = new ThreadSync(this.c);
-        tarea.setContactos(contactos);
-        tarea.start();
-
-
-
-    }
 
 
 
@@ -604,8 +599,7 @@ public class Agenda implements View.OnClickListener {
                  Alerta("Se insertó "+c.getNombre()+" "+c.getApellido());
                 }
 
-            //   Notificar("Sincronización finalizada");
-                  //  lectura();
+           // leerDatos();
 
 
 
@@ -614,7 +608,6 @@ public class Agenda implements View.OnClickListener {
 
         }
     }
-
 
 
     class ThreadLectura extends Thread {
@@ -648,32 +641,25 @@ Alerta("ENTRO EN LA JUGADA");
 
             if(cantidad_registros()==0)
             {
-                Alerta("NO HAY NI UNO");
+                Alerta("NO HAY NI UNO lect");
 
 
-                        activity.runOnUiThread(new Runnable() {
+                  /*      activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                //layout.removeAllViews();
+                                Alerta("ENTRA AQUI AL ARRANCAR");
                             }
-                        });
-
-
-
-
-
+                        });*/
 
             }
             else
             {
-
                 Alerta("ESTAMOS TUANIS");
                 contacto2=new ArrayList<Contacto>();
 
                 Cursor a = db.rawQuery("select id_contacto, id_institucion, nombre, apellido, claro, movistar, cootel, casa, trabajo, correo1, correo2, apodo, foto from Contacto" , null);
 
-                //      Alerta("-----------------------------------"+"select id , actividad , fecha_in , fecha_fin , arto , cargo  from Agenda where actividad like '%" + palabra + "%'");
-                int i=0;
+
                 if (a.moveToFirst())
                 {
                     do {
@@ -694,21 +680,25 @@ Alerta("ENTRO EN LA JUGADA");
 
 
 
-                        //  Alerta("EL CARGO ES ///////////// " + car[i]);
 
-                        //  i++;
                     } while (a.moveToNext());
 
 
                 }
 
-                muestra_interfaz(contacto2);
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        muestra_interfaz(contacto2);
+                    }
+                });
+
             }
 
 
-/*
 
- */
+
+
 
 
         }

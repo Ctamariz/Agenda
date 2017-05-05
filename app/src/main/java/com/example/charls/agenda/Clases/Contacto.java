@@ -438,7 +438,7 @@ public class Contacto {
 
             if(cantidad_registros()==0)
             {
-                Alerta("NO HAY NI UNO");
+                Alerta("NO HAY NI UNO grupo");
                 //layout.removeAllViews();
             }
             else
@@ -520,7 +520,7 @@ public class Contacto {
 
             if(cantidad_registros()==0)
             {
-                Alerta("NO HAY NI UNO");
+                Alerta("NO HAY NI UNO inst");
                 //layout.removeAllViews();
             }
             else

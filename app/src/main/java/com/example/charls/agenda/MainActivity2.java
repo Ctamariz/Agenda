@@ -17,13 +17,14 @@ import android.view.MenuItem;
 import com.example.charls.agenda.Clases.Agenda;
 import com.example.charls.agenda.Clases.Contacto;
 
-import static com.example.charls.agenda.R.id.fab2;
 
-public class MainActivity2 extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity2 extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -129,8 +130,9 @@ public class MainActivity2 extends AppCompatActivity
     }
     public void sincronizar()
     {
-        Agenda ag = new Agenda(this,MainActivity2.this);
-        ag.solicitar_contactos();
+      //  Agenda ag = new Agenda(this,MainActivity2.this);
+        Agenda agenda = new Agenda(this,MainActivity2.this);
+        agenda.solicitar_contactos();
         Contacto contacto=new Contacto(this);
         contacto.solicitar_instituciones();
         contacto.solicitar_grupos();
@@ -139,6 +141,6 @@ public class MainActivity2 extends AppCompatActivity
     public void lectura()
     {
         Agenda agenda = new Agenda(this,MainActivity2.this);
-        agenda.lectura();
+        agenda.leer_datos();
     }
 }
