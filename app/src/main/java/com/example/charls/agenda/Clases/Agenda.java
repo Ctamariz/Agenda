@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.support.annotation.UiThread;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -64,12 +65,18 @@ public class Agenda implements View.OnClickListener {
         scrollView = (ScrollView) activity.findViewById(R.id.scrollView);
 
 
-
+      /*  ThreadLectura tl = new ThreadLectura(this.c);
+        tl.start();*/
 
     }
 
     public ArrayList<Contacto> getContactos() {
         return contactos;
+    }
+    public void lectura()
+    {
+        ThreadLectura tl = new ThreadLectura(this.c);
+        tl.start();
     }
 
     public void solicitar_contactos()
@@ -219,6 +226,7 @@ public class Agenda implements View.OnClickListener {
     public void setContacto(Contacto contacto){
         this.contactos.add(contacto);
     }
+
 
     private void muestra_interfaz(ArrayList<Contacto>contactos)
     {
@@ -567,10 +575,12 @@ public class Agenda implements View.OnClickListener {
         tarea.setContactos(contactos);
         tarea.start();
 
-        ThreadLectura tl = new ThreadLectura(this.c);
-        tl.start();
+
 
     }
+
+
+
     class ThreadSync extends Thread {
         ArrayList<Contacto>contacto2;
         public void setContactos(ArrayList<Contacto>cont)
@@ -593,11 +603,18 @@ public class Agenda implements View.OnClickListener {
                  insertarContacto(c.getIdContacto(),0, c.getNombre(), c.getApellido(),c.getClaro(),c.getMovistar(),c.getCootel(),c.getCasa(),c.getTrabajo(),c.getCorreo1(),c.getCorreo2(),c.getApodo(),"");
                  Alerta("Se insertó "+c.getNombre()+" "+c.getApellido());
                 }
-            ThreadLectura tl = new ThreadLectura(this.c);
-            tl.start();
+
+            //   Notificar("Sincronización finalizada");
+                  //  lectura();
+
+
+
+
+
 
         }
     }
+
 
 
     class ThreadLectura extends Thread {
@@ -628,14 +645,28 @@ public class Agenda implements View.OnClickListener {
         public void run() {
 
 Alerta("ENTRO EN LA JUGADA");
-        try{
+
             if(cantidad_registros()==0)
             {
                 Alerta("NO HAY NI UNO");
-                layout.removeAllViews();
+
+
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                layout.removeAllViews();
+                            }
+                        });
+
+
+
+
+
+
             }
             else
             {
+
                 Alerta("ESTAMOS TUANIS");
                 contacto2=new ArrayList<Contacto>();
 
@@ -673,9 +704,7 @@ Alerta("ENTRO EN LA JUGADA");
 
                 muestra_interfaz(contacto2);
             }
-        }catch(Exception e){
 
-        }
 
 /*
 
