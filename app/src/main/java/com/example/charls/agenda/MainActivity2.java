@@ -2,6 +2,7 @@ package com.example.charls.agenda;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -16,6 +17,9 @@ import android.view.MenuItem;
 
 import com.example.charls.agenda.Clases.Agenda;
 import com.example.charls.agenda.Clases.Contacto;
+import com.example.charls.agenda.Clases.DTGrupo;
+import com.example.charls.agenda.Clases.DTGrupoContacto;
+import com.example.charls.agenda.Clases.DTInstitucion;
 
 
 public class MainActivity2 extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -36,12 +40,13 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Snackbar.make(view, "Se está sincronizando", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
 
                 sincronizar();
 
 
-                Snackbar.make(view, "Se está sincronizando", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
             }
         });
 
@@ -131,11 +136,18 @@ public class MainActivity2 extends AppCompatActivity implements NavigationView.O
     public void sincronizar()
     {
       //  Agenda ag = new Agenda(this,MainActivity2.this);
+
         Agenda agenda = new Agenda(this,MainActivity2.this);
+        //Contacto contacto=new Contacto(this);
+        DTInstitucion institucion=new DTInstitucion(this);
+        institucion.solicitar_instituciones();
+        DTGrupo grupo=new DTGrupo(this);
+        grupo.solicitar_grupos();
+        DTGrupoContacto dtGrupoContacto=new DTGrupoContacto(this);
+        dtGrupoContacto.solicitarGrupoContacto();
+
+       // SystemClock.sleep(2800);
         agenda.solicitar_contactos();
-        Contacto contacto=new Contacto(this);
-        contacto.solicitar_instituciones();
-        contacto.solicitar_grupos();
 
     }
     public void lectura()

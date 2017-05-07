@@ -51,15 +51,23 @@ public class Agenda implements View.OnClickListener {
     private ViewGroup layout;
     private ScrollView scrollView;
     private Activity activity;
+    ArrayList<Grupo>gruposDB;
+    ArrayList<GrupoContacto>gruposContactoDB;
+    ArrayList<Institucion>institucionDB;
+    DTGrupo dtGrupo;
+    DTInstitucion dtInstitucion;
+    DTGrupoContacto dtGrupoContacto;
 
     public Agenda(Context context, Activity act)
     {
         this.activity = act;
-       this.c=context;
+        this.c=context;
         agenda_sqlLit agenda = new agenda_sqlLit(this.c, "Agenda", null, 1);
 
         db = agenda.getWritableDatabase();
-
+        dtGrupo=new DTGrupo(c);
+        dtGrupoContacto=new DTGrupoContacto(c);
+        dtInstitucion=new DTInstitucion(c);
         layout = (ViewGroup) activity.findViewById(R.id.content);
         scrollView = (ScrollView) activity.findViewById(R.id.scrollView);
         //leerDatos();
@@ -67,6 +75,70 @@ public class Agenda implements View.OnClickListener {
 
 
     }
+
+    public int[] idGruposPorContacto(int idContacto){
+        int cantidad=dtGrupoContacto.cantidad_registros();
+        int grupos[]=new int[cantidad];
+        int i=0;
+        dtGrupoContacto.leerGrupos();//ejecuta la consulta con el hilo y llena el arreglo
+        this.gruposContactoDB=dtGrupoContacto.getGruposContactosDB();
+        for(GrupoContacto g:gruposContactoDB){
+            if(g.getId_contacto()==idContacto){
+                grupos[i]=g.getId_grupo();
+                Alerta("id grupo agregado al arreglo "+grupos[i]);
+                i++;
+            }
+
+        }
+
+        return grupos;
+    }
+
+
+
+
+    public ArrayList<Grupo> grupoPorId(int[] idGrupos){
+        ArrayList<Grupo> gr=new  ArrayList<Grupo>();
+        dtGrupo.leerGrupos();//ejecuta la consulta llena el arreglo
+        this.gruposDB=dtGrupo.getGruposDB();
+        int i=0;
+        for(Grupo g:gruposDB){
+            Alerta("grupo bd "+g.getNombre()+" grupo arreglo i "+idGrupos[i]);
+            if(g.getIdGrupo()==idGrupos[i]){
+
+              gr.add(g);
+                Alerta("Elemento i "+i+" grupo "+g.getNombre());
+                i++;
+            }
+
+        }
+        return gr;
+    }
+
+    public String institucionPorId(int idInstitucion){
+        Alerta("entra al metodo institucion x id");
+        String institucion="";
+        dtInstitucion.leerInstituciones();//ejecuta la consulta con el hilo y llena el arreglo
+        //this.institucionDB=dtInstitucion.getInstitucionesDB();
+        if(dtInstitucion.getInstitucionesDB().size()==0){
+            Alerta("arreglo de instituciones vacio");
+        }
+        else{
+            Alerta("existe mas de un objeto en el arreglo istitucion");
+            for(Institucion i:dtInstitucion.getInstitucionesDB()){
+                Alerta("id institucion "+i.getIdInstitucion()+ "nombre "+i.getNombre());
+                if(i.getIdInstitucion()==idInstitucion){
+                    institucion=String.valueOf(i.getNombre());
+                    Alerta("institucion en el metodo "+institucion);
+                    return  institucion;
+                }
+            }
+        }
+
+        return institucion;
+    }
+
+
 
     public ArrayList<Contacto> getContactos() {
         return contactos;
@@ -90,6 +162,8 @@ public class Agenda implements View.OnClickListener {
     }
     public void solicitar_contactos()
     {
+
+
 
 
         HashMap<String, String> map = new HashMap<>();
@@ -205,7 +279,7 @@ public class Agenda implements View.OnClickListener {
                         //  notificar(id[i] + "-" + actividad[i] + "-" + fecha_inicio[i] + "-" + fecha_fin[i] + "-" + arto[i] + "-" + cargo[i]);
                         Contacto contacto = new Contacto(this.c);
                         contacto.setIdContacto(id_contacto[i]);
-                       // contacto.setInstitucion(id_institucion);
+
                         contacto.setNombre(nombre[i]);
                         contacto.setApellido(apellido[i]);
                         contacto.setClaro(claro[i]);
@@ -215,6 +289,20 @@ public class Agenda implements View.OnClickListener {
                         contacto.setTrabajo(trabajo[i]);
                         contacto.setCorreo1(correo1[i]);
                         contacto.setCorreo2(correo2[i]);
+
+                        int[] idGrupos=this.idGruposPorContacto(id_contacto[i]);//obtengo todos los id grupo de un contacto
+                        ArrayList<Grupo> gruposPorContacto=this.grupoPorId(idGrupos);//obtengo los objetos grupos por id grupo
+                        contacto.setGrupos(gruposPorContacto);
+                        mostrarGruposXcontacto(contacto.getGrupos());
+
+                        Institucion inst=new Institucion();
+                        inst.setIdInstitucion(institucion[i]);
+                       String nombreIns=institucionPorId(institucion[i]);
+                        inst.setNombre(nombreIns);
+
+                         contacto.setInstitucion(inst);
+                        Alerta("el nombre de la institucion es "+contacto.getInstitucion().getIdInstitucion()+" el id es: "+contacto.getInstitucion().getNombre());
+
                         this.setContacto(contacto);//se agrega el objeto al arreglo...
                     }
                //     this.muestra_interfaz(this.contactos);
@@ -592,6 +680,7 @@ public class Agenda implements View.OnClickListener {
         @Override
         public void run() {
 
+
                eliminar_registros();
                 for (Contacto c : contacto2)
                 {
@@ -707,6 +796,10 @@ Alerta("ENTRO EN LA JUGADA");
 
 
 
-
+public void mostrarGruposXcontacto( ArrayList<Grupo> gr){
+ for(Grupo g:gr){
+     Alerta("el grupo para el contacto es "+g.getNombre());
+ }
+}
 
 }

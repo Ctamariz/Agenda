@@ -15,6 +15,7 @@ public class agenda_sqlLit extends SQLiteOpenHelper {
 
     String sqlCreateGrupo = "CREATE TABLE Grupo (id_grupo INTEGER,nombre TEXT)";
     String sqlCreateInstiucion = "CREATE TABLE Institucion (id_institucion INTEGER,nombre TEXT)";
+    String sqlCreateGrupoContacto = "CREATE TABLE GrupoContacto (id_grupoContacto INTEGER,id_grupo INTEGER,id_contacto INTEGER)";
 
     public agenda_sqlLit(Context contexto, String nombre,
                           SQLiteDatabase.CursorFactory factory, int version) {
@@ -26,6 +27,7 @@ public class agenda_sqlLit extends SQLiteOpenHelper {
         db.execSQL(sqlCreateContacto);
         db.execSQL(sqlCreateGrupo);
         db.execSQL(sqlCreateInstiucion);
+        db.execSQL(sqlCreateGrupoContacto);
 
     }
 
@@ -35,12 +37,14 @@ public class agenda_sqlLit extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS Contacto");
         db.execSQL("DROP TABLE IF EXISTS Grupo");
         db.execSQL("DROP TABLE IF EXISTS Institucion");
+        db.execSQL("DROP TABLE IF EXISTS GrupoContacto");
 
 
         //Se crea la nueva versión de la tabla
         db.execSQL(sqlCreateContacto);
         db.execSQL(sqlCreateGrupo);
         db.execSQL(sqlCreateInstiucion);
+        db.execSQL(sqlCreateGrupoContacto);
 
     }
 }

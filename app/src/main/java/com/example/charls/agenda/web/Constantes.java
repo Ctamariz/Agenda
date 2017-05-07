@@ -36,6 +36,7 @@ public class Constantes {
     public static final String GET = "http://" + IP + PUERTO_HOST + "/agenda_contacto/agenda.php";
     public static final String GETContact = "http://" + IP + PUERTO_HOST + "/agenda_contacto/grupo.php";
     public static final String GETInst = "http://" + IP + PUERTO_HOST + "/agenda_contacto/institucion.php";
+    public static final String GETGC = "http://" + IP + PUERTO_HOST + "/agenda_contacto/grupoContacto.php";
     /**
      * Clave para el valor extra que representa al identificador de una meta
      */
