@@ -1,6 +1,7 @@
 package com.example.charls.agenda.Clases;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -9,13 +10,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.support.annotation.UiThread;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -30,11 +32,8 @@ import com.example.charls.agenda.R;
 import com.example.charls.agenda.SQL.agenda_sqlLit;
 import com.example.charls.agenda.web.Constantes;
 import com.example.charls.agenda.web.VolleySingleton;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,6 +56,9 @@ public class Agenda implements View.OnClickListener {
     DTGrupo dtGrupo;
     DTInstitucion dtInstitucion;
     DTGrupoContacto dtGrupoContacto;
+    Dialog customDialog;
+
+    ArrayList<Contacto>muestraContacto=new ArrayList<Contacto>();
 
     public Agenda(Context context, Activity act)
     {
@@ -102,6 +104,7 @@ public class Agenda implements View.OnClickListener {
         dtGrupo.leerGrupos();//ejecuta la consulta llena el arreglo
         this.gruposDB=dtGrupo.getGruposDB();
         int i=0;
+
         for(Grupo g:gruposDB){
             Alerta("grupo bd "+g.getNombre()+" grupo arreglo i "+idGrupos[i]);
             if(g.getIdGrupo()==idGrupos[i]){
@@ -290,7 +293,8 @@ public class Agenda implements View.OnClickListener {
                         contacto.setCorreo1(correo1[i]);
                         contacto.setCorreo2(correo2[i]);
 
-                        int[] idGrupos=this.idGruposPorContacto(id_contacto[i]);//obtengo todos los id grupo de un contacto
+                        int[] idGrupos=this.idGruposPorContacto(id_contacto[i]);
+                        //obtengo todos los id grupo de un contacto
                         ArrayList<Grupo> gruposPorContacto=this.grupoPorId(idGrupos);//obtengo los objetos grupos por id grupo
                         contacto.setGrupos(gruposPorContacto);
                         mostrarGruposXcontacto(contacto.getGrupos());
@@ -301,6 +305,7 @@ public class Agenda implements View.OnClickListener {
                         inst.setNombre(nombreIns);
 
                          contacto.setInstitucion(inst);
+                    //    inst.getNombre();
                         Alerta("el nombre de la institucion es "+contacto.getInstitucion().getIdInstitucion()+" el id es: "+contacto.getInstitucion().getNombre());
 
                         this.setContacto(contacto);//se agrega el objeto al arreglo...
@@ -328,7 +333,7 @@ public class Agenda implements View.OnClickListener {
 
     private void muestra_interfaz(ArrayList<Contacto>contactos)
     {
-
+        muestraContacto=contactos;
 
         int q = contactos.size();
         try {
@@ -425,7 +430,7 @@ public class Agenda implements View.OnClickListener {
                         LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
 
-                re_a[i].setId(i);
+                re_a[i].setId(con.getIdContacto());
 
 
                 re_a[i].setOnClickListener(this);
@@ -438,13 +443,13 @@ public class Agenda implements View.OnClickListener {
                 //layoutParams2.setMargins(1000, 1000, 1000, 1000);
 
                 iv_a[i] = new ImageView(this.c);
-                iv_a[i].setId(1000+i);
+                iv_a[i].setId(1000+con.getIdContacto());
                 iv_a[i].setImageResource(R.drawable.usuario);
                 //  Alerta("alerta-" + aproducto[i]);
 
 
                 re_text[i] = new RelativeLayout(this.c);
-                re_text[i].setId(i + 5000);
+                re_text[i].setId(con.getIdContacto() + 5000);
                 //  re_text[i].setLayoutParams();
 
 
@@ -453,7 +458,7 @@ public class Agenda implements View.OnClickListener {
                 iv_a[i].setLayoutParams(layoutParams2);
 
                 tv_a[i] = new TextView(this.c);
-                tv_a[i].setId(i + 1000);
+                tv_a[i].setId(con.getIdContacto() + 1000);
 
               /*  tv_a2[i] = new TextView(this);
                 tv_a2[i].setId(id[i] + 2000);
@@ -465,15 +470,15 @@ public class Agenda implements View.OnClickListener {
 
                 ////Fecha
                 tv_fecha[i] = new TextView(this.c);
-                tv_fecha[i].setId(i + 6000);
-                tv_fecha[i].setText("Institución: " + " Chocobananos");
+                tv_fecha[i].setId(con.getIdContacto() + 6000);
+                tv_fecha[i].setText("Institución: " + con.getInstitucion().getNombre());
                 tv_fecha[i].setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                 tv_fecha[i].setTextColor(Color.BLACK);
 ///
 
                 ////Profundidad
                 tv_prof[i] = new TextView(this.c);
-                tv_prof[i].setId(i + 7000);
+                tv_prof[i].setId(con.getIdContacto() + 7000);
                 //  tv_prof[i].setText(""+prof[i]+" Km. Prof.");
                 tv_prof[i].setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                 tv_prof[i].setTextColor(Color.BLACK);
@@ -482,6 +487,7 @@ public class Agenda implements View.OnClickListener {
                 tv_fechaf[i] = new TextView(this.c);
                 tv_fechaf[i].setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                 tv_fechaf[i].setTextColor(Color.BLACK);
+
 ///
 
 
@@ -521,7 +527,31 @@ public class Agenda implements View.OnClickListener {
                /* }*/
                 tv_a[i].setText("" + con.getNombre());
                 tv_prof[i].setText("" + con.getApellido());
-                tv_fechaf[i].setText("" + "");//FECHA FINAL INFERIOR DERECHO
+
+                cadena="";
+                int cont=1;
+                for(Grupo g:con.getGrupos())
+                {
+                    if(cont ==con.getGrupos().size())
+                    {
+                       cadena+=" "+g.getNombre();
+                    }
+                    else
+                    {
+                        cadena +=" "+g.getNombre()+",";
+                    }
+
+                    cont++;
+                }
+                if(cadena.equals(""))
+                {
+                    tv_fechaf[i].setText("" + "");//FECHA FINAL INFERIOR DERECHO
+                }
+                else
+                {
+                    tv_fechaf[i].setText("Grupos" + cadena);//FECHA FINAL INFERIOR DERECHO
+                }
+
                 ///////////40
 
 
@@ -617,11 +647,7 @@ public class Agenda implements View.OnClickListener {
         return screenWidthInPixels;
     }
 
-    public void onClick(View v) {
-        Alerta("QUE NOTA LA MOTA");
 
-
-    }
 
     public void eliminar_registros()
     {
@@ -638,6 +664,7 @@ public class Agenda implements View.OnClickListener {
         ContentValues contactoValues = new ContentValues();
         contactoValues.put("id_contacto", idContacto);
         contactoValues.put("id_institucion", idInstitucion);
+        Alerta("El id de institucion insertado es "+idInstitucion);
         contactoValues.put("nombre", nombre);
         contactoValues.put("apellido", apellido);
         contactoValues.put("claro", claro);
@@ -656,7 +683,7 @@ public class Agenda implements View.OnClickListener {
             Alerta("Registro guardado satisfactoriamente");
 
 
-
+           //  db.close();
         return true;
     }
 
@@ -684,7 +711,7 @@ public class Agenda implements View.OnClickListener {
                eliminar_registros();
                 for (Contacto c : contacto2)
                 {
-                 insertarContacto(c.getIdContacto(),0, c.getNombre(), c.getApellido(),c.getClaro(),c.getMovistar(),c.getCootel(),c.getCasa(),c.getTrabajo(),c.getCorreo1(),c.getCorreo2(),c.getApodo(),"");
+                 insertarContacto(c.getIdContacto(),c.getInstitucion().getIdInstitucion(), c.getNombre(), c.getApellido(),c.getClaro(),c.getMovistar(),c.getCootel(),c.getCasa(),c.getTrabajo(),c.getCorreo1(),c.getCorreo2(),c.getApodo(),"");
                  Alerta("Se insertó "+c.getNombre()+" "+c.getApellido());
                 }
 
@@ -718,6 +745,7 @@ public class Agenda implements View.OnClickListener {
                     i++;
                 } while (a.moveToNext());
             }
+          //  db.close();
             Alerta("la pinche i "+i);
             return i;
         }
@@ -755,7 +783,7 @@ Alerta("ENTRO EN LA JUGADA");
 
                         Contacto contacto = new Contacto(this.c);
                         contacto.setIdContacto(a.getInt(0));
-                        // contacto.setInstitucion(id_institucion);
+                         //contacto.setInstitucion(a.getInt(1));
                         contacto.setNombre(a.getString(2));
                         contacto.setApellido(a.getString(3));
                         contacto.setClaro(a.getString(4));
@@ -765,6 +793,29 @@ Alerta("ENTRO EN LA JUGADA");
                         contacto.setTrabajo(a.getString(8));
                         contacto.setCorreo1(a.getString(9));
                         contacto.setCorreo2(a.getString(10));
+
+
+                        int[] idGrupos=idGruposPorContacto(a.getInt(0));
+                        //obtengo todos los id grupo de un contacto
+                        ArrayList<Grupo> gruposPorContacto=grupoPorId(idGrupos);//obtengo los objetos grupos por id grupo
+                        contacto.setGrupos(gruposPorContacto);
+                        mostrarGruposXcontacto(contacto.getGrupos());
+
+                        Institucion inst=new Institucion();
+                        Alerta("el id de isntitucion es "+a.getInt(1));
+                        inst.setIdInstitucion(a.getInt(1));
+                        String nombreIns=institucionPorId(a.getInt(1));
+                        inst.setNombre(nombreIns);
+
+                        contacto.setInstitucion(inst);
+                        Alerta("La isntitucion es "+inst.getNombre());
+
+                        for(Grupo g:contacto.getGrupos())
+                        {
+                            Alerta("El grupo es "+g.getNombre());
+                        }
+
+
                         contacto2.add(contacto);
 
 
@@ -772,7 +823,7 @@ Alerta("ENTRO EN LA JUGADA");
 
                     } while (a.moveToNext());
 
-
+db.close();
                 }
 
                 activity.runOnUiThread(new Runnable() {
@@ -798,8 +849,106 @@ Alerta("ENTRO EN LA JUGADA");
 
 public void mostrarGruposXcontacto( ArrayList<Grupo> gr){
  for(Grupo g:gr){
+
      Alerta("el grupo para el contacto es "+g.getNombre());
  }
 }
+
+    public void onClick(View v) {
+
+
+        Contacto contact=null;
+        for(Contacto cont:muestraContacto)
+        {
+            if(v.getId()==cont.getIdContacto())
+            {
+                contact=cont;
+            }
+
+        }
+        if(contact == null)
+        {
+            Alerta("No hay ninguno");
+        }
+        else
+        {
+            Alerta("QUE NOTA LA MOTA "+contact.getNombre());
+
+            //////////
+       //     Button btn_pluvi=(Button) findViewById(R.id.btn_pluvi);
+       //     btn_pluvi.setEnabled(false);
+
+            // con este tema personalizado evitamos los bordes por defecto
+            customDialog = new Dialog(this.c, R.style.Theme_Dialog_Translucent);
+            //deshabilitamos el título por defecto
+            customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            //obligamos al usuario a pulsar los botones para cerrarlo
+            customDialog.setCancelable(false);
+            //establecemos el contenido de nuestro dialog
+            customDialog.setContentView(R.layout.contacto);
+
+            TextView tv_nombre=(TextView)customDialog.findViewById(R.id.tv_alpha);
+            tv_nombre.setText(""+contact.getNombre() +" "+contact.getApellido() +" ("+contact.getApodo()+")");
+            TextView tv_institucion = (TextView)customDialog.findViewById(R.id.tv_alpha_3);
+            tv_institucion.setText("Institución: "+contact.getInstitucion().getNombre());
+            TextView tv_grupo = (TextView) customDialog.findViewById(R.id.tv_alpha_4);
+            String cadena="";
+            int cont=1;
+            for(Grupo g:contact.getGrupos())
+            {
+                if(cont ==contact.getGrupos().size())
+                {
+                    cadena+=" "+g.getNombre();
+                }
+                else
+                {
+                    cadena +=" "+g.getNombre()+",";
+                }
+
+                cont++;
+            }
+
+            tv_grupo.setText("Grupo(s): "+cadena);
+
+            TextView tv_celular1=(TextView)customDialog.findViewById(R.id.tv_cel_claro_mov);
+            tv_celular1.setText("C: "+contact.getClaro()+" M: "+contact.getMovistar());
+
+            TextView tv_celular2=(TextView)customDialog.findViewById(R.id.tv_cel_cootel_casa);
+            tv_celular2.setText("Co: "+contact.getCootel()+" Ca: "+contact.getCasa());
+
+            TextView tv_celular3=(TextView)customDialog.findViewById(R.id.tv_cel_trabajo);
+            tv_celular3.setText("Tr: "+contact.getTrabajo());
+
+            TextView tv_email1=(TextView)customDialog.findViewById(R.id.tv_email1);
+            tv_email1.setText("E1: "+contact.getCorreo1());
+
+            TextView tv_email2=(TextView)customDialog.findViewById(R.id.tv_email2);
+            tv_email2.setText("E2: "+contact.getCorreo2());
+
+            // params.width = (int)(tamano_pantalla()/5);
+
+
+          /*  TextView titulo = (TextView) customDialog.findViewById(R.id.titulo_p);
+            titulo.setText("PLUVIOMETRÍA (mm)");*/
+
+       //     Pluviometria pv = new Pluviometria(MainActivity.this);
+       //     pv.setDialog(customDialog);
+       //     pv.lectura();
+
+            ((RelativeLayout) customDialog.findViewById(R.id.cancelar)).setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    customDialog.dismiss();
+                }
+            });
+
+            customDialog.show();
+            /////////
+        }
+
+
+
+    }
 
 }

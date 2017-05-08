@@ -203,7 +203,7 @@ public class DTGrupo {
 
         @Override
         public void run() {
-            solicitar_grupos();
+         //   solicitar_grupos();
             eliminarGrupos();
             for (Grupo g : grupos2)
             {
@@ -278,6 +278,7 @@ public class DTGrupo {
 
 
                 }
+                db.close();
                 setGruposDB(grupos2);//se agregan al arreglo, pero desde la base de datos
                 mostrarGrupos(grupos2);
             }

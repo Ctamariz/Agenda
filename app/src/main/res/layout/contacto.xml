@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_container"
+    android:orientation="vertical" >
+    <ScrollView
+        android:id="@+id/scrollView_v"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:fillViewport="true"
+        android:scrollbarStyle="outsideInset" >
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="1">
+    <RelativeLayout
+        android:layout_width="match_parent" android:layout_height="425dp"
+        android:background="#FFFFFF"
+        android:id="@+id/alpha_elegido"
+
+
+        >
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+
+            android:orientation="vertical">
+
+            <ImageView
+                android:src="@drawable/usuario"
+                android:id="@+id/iv_foto_generica"
+                android:layout_gravity="center"
+                android:layout_width="120sp"
+                android:layout_marginTop="30dip"
+                android:layout_height="120sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50sp"
+                android:text="Carlos Ernesto Van de Velde (tito)"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:id="@+id/tv_alpha"
+                android:textSize="20sp"
+                android:textColor="#000000"
+                />
+            <TextView
+                android:id="@+id/tv_alpha_3"
+                android:layout_width="match_parent"
+                android:layout_height="30sp"
+                android:textColor="#000000"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:textSize="15sp"
+                android:text="Institución"/>
+            <TextView
+                android:id="@+id/tv_alpha_4"
+                android:layout_width="match_parent"
+                android:layout_height="30sp"
+                android:textColor="#000000"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:textSize="15sp"
+                android:text="Grupo"/>
+            <TextView
+                android:id="@+id/tv_cel_claro_mov"
+                android:layout_width="match_parent"
+                android:layout_height="30sp"
+                android:textColor="#000000"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:textSize="15sp"
+                android:text="C: 75308742 M: 75308742"/>
+            <TextView
+                android:id="@+id/tv_cel_cootel_casa"
+                android:layout_width="match_parent"
+                android:layout_height="30sp"
+                android:textColor="#000000"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:textSize="15sp"
+                android:text="Co: 75308742 Ca: 75308742"/>
+            <TextView
+                android:id="@+id/tv_cel_trabajo"
+                android:layout_width="match_parent"
+                android:layout_height="30sp"
+                android:textColor="#000000"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:textSize="15sp"
+                android:text="Tr: 75308742"/>
+
+            <TextView
+                android:id="@+id/tv_email1"
+                android:layout_width="match_parent"
+                android:layout_height="30sp"
+                android:textColor="#000000"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:textSize="15sp"
+                android:text="cvande@agaton.ni"/>
+            <TextView
+                android:id="@+id/tv_email2"
+                android:layout_width="match_parent"
+                android:layout_height="30sp"
+                android:textColor="#000000"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:textSize="15sp"
+                android:text="titovdv56@yahoo.com"/>
+
+
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+
+
+        android:id="@+id/alpha_elegido2">
+
+
+
+
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="75dip"
+                >
+            <TableRow>
+
+            <RelativeLayout
+
+                android:layout_width="0dp" android:layout_height="75dip"
+                android:layout_weight="33"
+                android:background="#0C8E36"
+                android:id="@+id/widget"
+                android:onClick="llamar">
+
+                <ImageView
+                    android:src="@drawable/telefono"
+                    android:id="@+id/iv_incidencia"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="75sp"
+
+                    android:layout_height="75sp"
+                    android:onClick="llamar"/>
+
+
+
+
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+
+
+                android:layout_width="0dp" android:layout_height="75dip"
+                android:layout_weight="33"
+                android:background="#F39200"
+                android:onClick="enviar_sms"
+                android:id="@+id/sms">
+
+                <ImageView
+                    android:src="@drawable/sms"
+                    android:id="@+id/iv_sms"
+                    android:layout_centerHorizontal="true"
+                    android:padding="3dp"
+                    android:layout_width="75sp"
+                    android:layout_height="75sp"/>
+
+
+
+
+
+            </RelativeLayout>
+
+
+
+            <RelativeLayout
+
+
+                android:layout_width="0dp" android:layout_height="75dip"
+                android:layout_weight="33"
+                android:background="#1D70B7"
+                android:id="@+id/email1"
+                android:onClick="enviar_email">
+
+                <ImageView
+                    android:src="@drawable/email"
+                    android:id="@+id/iv_mail1"
+                    android:layout_centerHorizontal="true"
+                    android:padding="3dp"
+                    android:layout_width="75sp"
+                    android:layout_height="75sp"/>
+
+
+            </RelativeLayout>
+            </TableRow>
+            </TableLayout>
+            <RelativeLayout
+
+
+                android:layout_width="match_parent" android:layout_height="75dip"
+                android:background="#7C0C0C"
+                android:id="@+id/cancelar"
+                android:onClick="enviar_email">
+
+                <ImageView
+                    android:src="@drawable/xjodida"
+                    android:id="@+id/iv_cancelar"
+                    android:layout_centerHorizontal="true"
+                    android:padding="3dp"
+                    android:layout_width="75sp"
+                    android:layout_height="75sp"/>
+
+
+
+
+
+            </RelativeLayout>
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
+
+
