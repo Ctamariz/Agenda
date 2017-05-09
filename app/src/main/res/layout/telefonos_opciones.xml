@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+
+        android:id="@+id/contendor_telefonos">
+
+
+
+
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+
+                android:layout_width="match_parent" android:layout_height="100dip"
+                android:background="#FF4646"
+                android:id="@+id/tel_claro"
+               >
+
+                <ImageView
+                    android:src="@drawable/telefono"
+                    android:id="@+id/iv_tel_claro"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="100sp"
+
+                    android:layout_height="100sp"
+                    />
+
+
+
+
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+
+
+                android:layout_width="match_parent" android:layout_height="100dip"
+                android:background="#528D52"
+
+                android:id="@+id/tel_movistar">
+
+                <ImageView
+                    android:src="@drawable/sms"
+                    android:id="@+id/iv_tel_mov"
+                    android:layout_centerHorizontal="true"
+                    android:padding="3dp"
+                    android:layout_width="100sp"
+                    android:layout_height="100sp"/>
+
+
+
+
+
+            </RelativeLayout>
+
+
+
+            <RelativeLayout
+
+
+                android:layout_width="match_parent" android:layout_height="100dip"
+                android:background="#E99F16"
+                android:id="@+id/tel_cootel"
+               >
+
+                <ImageView
+                    android:src="@drawable/email"
+                    android:id="@+id/iv_tel_cootel"
+                    android:layout_centerHorizontal="true"
+                    android:padding="3dp"
+                    android:layout_width="100sp"
+                    android:layout_height="100sp"/>
+
+
+
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+
+
+                android:layout_width="match_parent" android:layout_height="100dip"
+                android:background="#46547C"
+                android:id="@+id/tel_casa"
+                >
+
+                <ImageView
+                    android:src="@drawable/email"
+                    android:id="@+id/iv_tel_casa"
+                    android:layout_centerHorizontal="true"
+                    android:padding="3dp"
+                    android:layout_width="100sp"
+                    android:layout_height="100sp"/>
+
+
+
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+
+
+                android:layout_width="match_parent" android:layout_height="100dip"
+                android:background="#A97C1C"
+                android:id="@+id/tel_trabajo"
+                >
+
+                <ImageView
+                    android:src="@drawable/email"
+                    android:id="@+id/iv_tel_trabajo"
+                    android:layout_centerHorizontal="true"
+                    android:padding="3dp"
+                    android:layout_width="100sp"
+                    android:layout_height="100sp"/>
+
+
+
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+
+
+                android:layout_width="match_parent" android:layout_height="100dip"
+                android:background="#7C0C0C"
+                android:id="@+id/cancel_telefono"
+                >
+
+                <ImageView
+                    android:src="@drawable/xjodida"
+                    android:id="@+id/iv_tel_cancelar"
+                    android:layout_centerHorizontal="true"
+                    android:padding="3dp"
+                    android:layout_width="100sp"
+                    android:layout_height="100sp"/>
+
+
+
+
+
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

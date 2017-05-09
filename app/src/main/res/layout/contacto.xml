@@ -147,8 +147,8 @@
                 android:layout_width="0dp" android:layout_height="75dip"
                 android:layout_weight="33"
                 android:background="#0C8E36"
-                android:id="@+id/widget"
-                android:onClick="llamar">
+                android:id="@+id/telefono_rl"
+                >
 
                 <ImageView
                     android:src="@drawable/telefono"
@@ -157,7 +157,7 @@
                     android:layout_width="75sp"
 
                     android:layout_height="75sp"
-                    android:onClick="llamar"/>
+                   />
 
 
 
@@ -172,7 +172,6 @@
                 android:layout_width="0dp" android:layout_height="75dip"
                 android:layout_weight="33"
                 android:background="#F39200"
-                android:onClick="enviar_sms"
                 android:id="@+id/sms">
 
                 <ImageView
@@ -238,8 +237,26 @@
 
 
     </RelativeLayout>
+
+
+            <include
+                layout="@layout/telefonos_opciones"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <include
+                layout="@layout/sms_opciones"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <include
+                layout="@layout/enviar_sms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
     </ScrollView>
+
+
 </LinearLayout>
 
 
