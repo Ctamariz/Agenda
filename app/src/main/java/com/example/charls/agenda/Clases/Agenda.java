@@ -292,6 +292,7 @@ public class Agenda implements View.OnClickListener {
                         contacto.setTrabajo(trabajo[i]);
                         contacto.setCorreo1(correo1[i]);
                         contacto.setCorreo2(correo2[i]);
+                        contacto.setApodo(apodo[i]);
 
                         int[] idGrupos=this.idGruposPorContacto(id_contacto[i]);
                         //obtengo todos los id grupo de un contacto
@@ -793,6 +794,7 @@ Alerta("ENTRO EN LA JUGADA");
                         contacto.setTrabajo(a.getString(8));
                         contacto.setCorreo1(a.getString(9));
                         contacto.setCorreo2(a.getString(10));
+                        contacto.setApodo(a.getString(11));
 
 
                         int[] idGrupos=idGruposPorContacto(a.getInt(0));
