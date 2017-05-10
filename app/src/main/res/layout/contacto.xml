@@ -138,20 +138,20 @@
 
             <TableLayout
                 android:layout_width="match_parent"
-                android:layout_height="75dip"
+                android:layout_height="wrap_content"
                 >
             <TableRow>
 
             <RelativeLayout
 
                 android:layout_width="0dp" android:layout_height="75dip"
-                android:layout_weight="33"
+                android:layout_weight="50"
                 android:background="#0C8E36"
                 android:id="@+id/telefono_rl"
                 >
 
                 <ImageView
-                    android:src="@drawable/telefono"
+                    android:src="@drawable/telefonito"
                     android:id="@+id/iv_incidencia"
                     android:layout_centerHorizontal="true"
                     android:layout_width="75sp"
@@ -170,12 +170,12 @@
 
 
                 android:layout_width="0dp" android:layout_height="75dip"
-                android:layout_weight="33"
+                android:layout_weight="50"
                 android:background="#F39200"
                 android:id="@+id/sms">
 
                 <ImageView
-                    android:src="@drawable/sms"
+                    android:src="@drawable/smsito"
                     android:id="@+id/iv_sms"
                     android:layout_centerHorizontal="true"
                     android:padding="3dp"
@@ -188,16 +188,16 @@
 
             </RelativeLayout>
 
-
-
+            </TableRow>
+            <TableRow>
             <RelativeLayout
 
 
                 android:layout_width="0dp" android:layout_height="75dip"
-                android:layout_weight="33"
+                android:layout_weight="50"
                 android:background="#1D70B7"
                 android:id="@+id/email1"
-                android:onClick="enviar_email">
+                >
 
                 <ImageView
                     android:src="@drawable/email"
@@ -209,29 +209,33 @@
 
 
             </RelativeLayout>
+
+                <RelativeLayout
+
+
+                    android:layout_width="0dp" android:layout_height="75dip"
+                    android:background="#7C0C0C"
+                    android:layout_weight="50"
+                    android:id="@+id/cancelar"
+                    android:onClick="enviar_email">
+
+                    <ImageView
+                        android:src="@drawable/atras"
+                        android:id="@+id/iv_cancelar"
+                        android:layout_centerHorizontal="true"
+                        android:padding="3dp"
+                        android:layout_width="75sp"
+                        android:layout_height="75sp"/>
+
+
+
+
+
+                </RelativeLayout>
+
             </TableRow>
             </TableLayout>
-            <RelativeLayout
 
-
-                android:layout_width="match_parent" android:layout_height="75dip"
-                android:background="#7C0C0C"
-                android:id="@+id/cancelar"
-                android:onClick="enviar_email">
-
-                <ImageView
-                    android:src="@drawable/xjodida"
-                    android:id="@+id/iv_cancelar"
-                    android:layout_centerHorizontal="true"
-                    android:padding="3dp"
-                    android:layout_width="75sp"
-                    android:layout_height="75sp"/>
-
-
-
-
-
-            </RelativeLayout>
         </LinearLayout>
 
 

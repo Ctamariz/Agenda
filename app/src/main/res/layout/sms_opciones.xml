@@ -25,7 +25,7 @@
                >
 
                 <ImageView
-                    android:src="@drawable/telefono"
+                    android:src="@drawable/burbujita"
                     android:id="@+id/iv_sms_claro"
                     android:layout_centerHorizontal="true"
                     android:layout_width="100sp"
@@ -49,7 +49,7 @@
                 android:id="@+id/sms_movistar">
 
                 <ImageView
-                    android:src="@drawable/sms"
+                    android:src="@drawable/movistarcito"
                     android:id="@+id/iv_sms_mov"
                     android:layout_centerHorizontal="true"
                     android:padding="3dp"
@@ -73,7 +73,7 @@
                >
 
                 <ImageView
-                    android:src="@drawable/email"
+                    android:src="@drawable/cootelcito"
                     android:id="@+id/iv_sms_cootel"
                     android:layout_centerHorizontal="true"
                     android:padding="3dp"
@@ -98,7 +98,7 @@
                 >
 
                 <ImageView
-                    android:src="@drawable/xjodida"
+                    android:src="@drawable/atras"
                     android:id="@+id/iv_tel_cancelar2"
                     android:layout_centerHorizontal="true"
                     android:padding="3dp"

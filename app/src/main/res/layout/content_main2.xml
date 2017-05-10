@@ -10,13 +10,32 @@
 
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_width="fill_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
 
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:fillViewport="true"
-        android:scrollbarStyle="outsideInset" >
+        android:scrollbarStyle="outsideInset"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="0dp">
+        <LinearLayout
+            android:id="@+id/General"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+
+
+
+
+        <include
+            layout="@layout/filtro"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteY="8dp"
+            tools:layout_editor_absoluteX="8dp" />
 
         <LinearLayout
             android:id="@+id/content"
@@ -28,5 +47,8 @@
 
 
         </LinearLayout>
+        </LinearLayout>
+
     </ScrollView>
+
 </android.support.constraint.ConstraintLayout>

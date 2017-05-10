@@ -25,10 +25,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.LayoutAnimationController;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -161,7 +157,11 @@ public class Agenda implements View.OnClickListener {
     }
 
     public void leer_datos() {
-        ThreadLectura tl = new ThreadLectura(this.c);
+        ThreadLectura tl = new ThreadLectura(this.c,0,0,"");
+        tl.start();
+    }
+    public void leer_datos(int grupo, int institucion, String indicio) {
+        ThreadLectura tl = new ThreadLectura(this.c,institucion,grupo,indicio);
         tl.start();
     }
 
@@ -711,13 +711,52 @@ public class Agenda implements View.OnClickListener {
     class ThreadLectura extends Thread {
         ArrayList<Contacto> contacto2;
         Context c;
+        int id_institucion,id_grupo;
+        String cadena;
 
-        public ThreadLectura(Context context) {
+        public ThreadLectura(Context context, int institucion, int grupo, String indicio) {
             c = context;
+            this.id_institucion = institucion;
+            this.id_grupo=grupo;
+            this.cadena=indicio;
         }
 
         public int cantidad_registros() {
-            Cursor a = db.rawQuery("select id_contacto, id_institucion, nombre, apellido, claro, movistar, cootel, casa, trabajo, correo1, correo2, apodo, foto from Contacto", null);
+
+
+
+            String where=" where nombre  like '%"+cadena+"%'";
+
+            if(this.id_institucion==0)
+            {
+                where +="";
+            }
+            else
+            {
+                where += " and id_institucion = "+id_institucion;
+            }
+          /*  if(this.cadena.equals(""))
+            {
+                where +="";
+            }
+            else
+            {
+                where +=" and (nombre || ' ' || apellido) like '%"+cadena+"%'";
+            }*/
+
+            if(this.id_grupo ==0)
+            {
+                where +="";
+            }
+            else
+            {
+                where += " and id_grupo = "+id_grupo;
+            }
+
+
+          //  where +="";
+            Alerta("select distinct Contacto.id_contacto, id_institucion, nombre, apellido, claro, movistar, cootel, casa, trabajo, correo1, correo2, apodo, foto from Contacto  left join GrupoContacto  on Contacto.id_contacto = GrupoContacto.id_contacto "+where);
+            Cursor a = db.rawQuery("select distinct Contacto.id_contacto, id_institucion, nombre, apellido, claro, movistar, cootel, casa, trabajo, correo1, correo2, apodo, foto from Contacto  left join GrupoContacto  on Contacto.id_contacto = GrupoContacto.id_contacto "+where, null);
             int i = 0;
             if (a.moveToFirst()) {
                 do {
@@ -751,8 +790,38 @@ public class Agenda implements View.OnClickListener {
                 Alerta("ESTAMOS TUANIS");
                 contacto2 = new ArrayList<Contacto>();
 
-                Cursor a = db.rawQuery("select id_contacto, id_institucion, nombre, apellido, claro, movistar, cootel, casa, trabajo, correo1, correo2, apodo, foto from Contacto", null);
 
+                String where=" where nombre  like '%"+cadena+"%'";
+
+                if(this.id_institucion==0)
+                {
+                    where +="";
+                }
+                else
+                {
+                    where += " and id_institucion = "+id_institucion;
+                }
+          /*  if(this.cadena.equals(""))
+            {
+                where +="";
+            }
+            else
+            {
+                where +=" and (nombre || ' ' || apellido) like '%"+cadena+"%'";
+            }*/
+
+                if(this.id_grupo ==0)
+                {
+                    where +="";
+                }
+                else
+                {
+                    where += " and id_grupo = "+id_grupo;
+                }
+
+                Alerta("select distinct Contacto.id_contacto, id_institucion, nombre, apellido, claro, movistar, cootel, casa, trabajo, correo1, correo2, apodo, foto from Contacto  left join GrupoContacto  on Contacto.id_contacto = GrupoContacto.id_contacto "+where);
+
+                Cursor a = db.rawQuery("select distinct Contacto.id_contacto, id_institucion, nombre, apellido, claro, movistar, cootel, casa, trabajo, correo1, correo2, apodo, foto from Contacto  left join GrupoContacto  on Contacto.id_contacto = GrupoContacto.id_contacto "+where, null);
 
                 if (a.moveToFirst()) {
                     do {
@@ -1114,6 +1183,20 @@ public class Agenda implements View.OnClickListener {
                 }
             });
 
+            ((RelativeLayout) customDialog.findViewById(R.id.email1)).setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+
+
+
+
+                    enviar_email(c.getCorreo1(),c.getCorreo2());
+
+
+                }
+            });
+
 
 
 
@@ -1400,6 +1483,50 @@ public class Agenda implements View.OnClickListener {
         } catch (Exception e) {
             Alerta("El numero está jodido");
         }
+    }
+
+
+    public void enviar_email(String email1, String email2)
+    {
+
+
+        // Notificar(email);
+        if((email1.equals("") || email1 ==null)&&(email2.equals("") || email2 ==null)){
+            notificar("El contacto no tiene correos registrados");
+            Alerta("El contacto no tiene correos registrados");
+        }
+        else if(email1.equals("") || email1 ==null){
+            String[] emails = {email2};
+        }else if(email2.equals("") || email2 ==null){
+            String[] emails = {email1};
+        }
+        else{
+            String[] emails = {email1,email2};
+            String subject = "Asunto";
+            String message = "Tu mensaje";
+
+            Intent email = new Intent(Intent.ACTION_SEND);
+            email.putExtra(Intent.EXTRA_EMAIL, emails);
+            email.putExtra(Intent.EXTRA_SUBJECT, subject);
+            email.putExtra(Intent.EXTRA_TEXT, message);
+
+            // need this to prompts email client only
+            email.setType("message/rfc822");
+
+            this.activity.startActivity(Intent.createChooser(email, "Escoja su cliente de email :"));
+        }
+
+
+
+
+      /*  Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setData(Uri.parse("mailto:"+"ramiro@agaton.ni"));
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, email);
+        emailIntent.putExtra(Intent.EXTRA_CC, "ramiro@agaton.ni");
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "SUBJECT");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "CONTENIDO");
+        emailIntent.setType("message/rfc822");
+        this.m.startActivity(Intent.createChooser(emailIntent, "Email "));*/
     }
 
 
